@@ -19,6 +19,9 @@ export default async function handler(req, res) {
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
+    if (!apiRes.ok) {
+      return res.status(apiRes.status).json({ error: `OpenSky airport lookup failed: ${apiRes.status}` });
+    }
     const data = await apiRes.json();
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate'); // cache for 60 seconds
     res.status(200).json(data);

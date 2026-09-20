@@ -95,7 +95,7 @@ export default function App() {
                       <strong>⚠ API Error</strong><br />
                       {error}<br />
                       <span style={{ color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>
-                        If deployed to Vercel, ensure OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET are set in your Environment Variables.
+                        If this is running on Vercel, make sure OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET are set in Project Settings and redeploy.
                       </span>
                     </div>
                   </div>

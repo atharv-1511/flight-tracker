@@ -4,6 +4,17 @@ const API_URL = '/api';
  * Fetch all live state vectors from the OpenSky proxy.
  * @param {Object} bbox - Optional bounding box { lamin, lomin, lamax, lomax }
  */
+async function readApiError(res) {
+  try {
+    const errBody = await res.json();
+    if (errBody?.error) return errBody.error;
+  } catch (_) {
+    // Ignore JSON parsing failures and fall back to the status code.
+  }
+
+  return `Request failed with status ${res.status}`;
+}
+
 export async function fetchStates(bbox = null) {
   let url = `${API_URL}/states`;
   if (bbox) {
@@ -18,11 +29,7 @@ export async function fetchStates(bbox = null) {
 
   const res = await fetch(url);
   if (!res.ok) {
-    let errMsg = `Proxy error: ${res.status}`;
-    try {
-      const errBody = await res.json();
-      if (errBody.error) errMsg = errBody.error;
-    } catch (e) {}
+    const errMsg = await readApiError(res);
     throw new Error(errMsg);
   }
   const data = await res.json();

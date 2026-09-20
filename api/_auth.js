@@ -12,7 +12,7 @@ export async function getOpenSkyToken() {
   const CLIENT_SECRET = process.env.OPENSKY_CLIENT_SECRET;
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
-    throw new Error('OpenSky credentials not configured in environment variables.');
+    throw new Error('OpenSky credentials are missing. Add OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET in your Vercel project environment variables.');
   }
 
   const body = new URLSearchParams({
