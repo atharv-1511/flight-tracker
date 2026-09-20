@@ -1,7 +1,21 @@
-const rawEnvUrl = (import.meta.env.VITE_API_BASE_URL || '/api').trim().replace(/\/$/, '');
-const API_URL = (rawEnvUrl.startsWith('http') && !rawEnvUrl.endsWith('/api'))
-  ? `${rawEnvUrl}/api`
-  : rawEnvUrl;
+function getApiBaseUrl() {
+  const envUrl = (import.meta.env.VITE_API_BASE_URL || '/api').trim().replace(/\/$/, '');
+  
+  if (!envUrl.startsWith('http')) {
+    return '/api';
+  }
+
+  let clean = envUrl
+    .replace(/\/states$/, '')
+    .replace(/\/track$/, '')
+    .replace(/\/airport$/, '')
+    .replace(/\/api$/, '')
+    .replace(/\/$/, '');
+
+  return `${clean}/api`;
+}
+
+const API_URL = getApiBaseUrl();
 
 /**
  * Fetch all live state vectors from the OpenSky proxy.
