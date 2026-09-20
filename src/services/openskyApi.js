@@ -1,4 +1,7 @@
-const API_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+const rawEnvUrl = (import.meta.env.VITE_API_BASE_URL || '/api').trim().replace(/\/$/, '');
+const API_URL = (rawEnvUrl.startsWith('http') && !rawEnvUrl.endsWith('/api'))
+  ? `${rawEnvUrl}/api`
+  : rawEnvUrl;
 
 /**
  * Fetch all live state vectors from the OpenSky proxy.

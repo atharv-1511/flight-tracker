@@ -95,7 +95,7 @@ export default function App() {
                       <strong>⚠ API Error</strong><br />
                       {error}<br />
                       <span style={{ color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>
-                        If this is running on Vercel, make sure OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET are set in Project Settings and redeploy.
+                        Ensure your Railway backend is deployed and VITE_API_BASE_URL is set in Vercel (then redeploy), OR set OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET on Vercel and redeploy.
                       </span>
                     </div>
                   </div>
