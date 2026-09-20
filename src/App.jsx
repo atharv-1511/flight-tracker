@@ -92,10 +92,10 @@ export default function App() {
                       background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
                       borderRadius: 8, padding: 12, color: 'var(--accent-red)', fontSize: 12, lineHeight: 1.5,
                     }}>
-                      <strong>⚠ Proxy Error</strong><br />
+                      <strong>⚠ API Error</strong><br />
                       {error}<br />
                       <span style={{ color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>
-                        Make sure the proxy is running: <code style={{ fontFamily: 'var(--text-mono)', fontSize: 11 }}>npm run proxy</code>
+                        If deployed to Vercel, ensure OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET are set in your Environment Variables.
                       </span>
                     </div>
                   </div>

@@ -17,7 +17,14 @@ export async function fetchStates(bbox = null) {
   }
 
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Proxy error: ${res.status}`);
+  if (!res.ok) {
+    let errMsg = `Proxy error: ${res.status}`;
+    try {
+      const errBody = await res.json();
+      if (errBody.error) errMsg = errBody.error;
+    } catch (e) {}
+    throw new Error(errMsg);
+  }
   const data = await res.json();
   return parseStates(data);
 }
