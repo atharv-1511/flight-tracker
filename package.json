@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run proxy\" \"vite\"",
+    "start": "node server/proxy.js",
     "proxy": "node server/proxy.js",
     "build": "vite build",
     "preview": "vite preview"

@@ -49,8 +49,8 @@ async function getAccessToken() {
   return cachedToken;
 }
 
-// ── GET /api/states ─────────────────────────────────────────────────
-app.get('/api/states', async (req, res) => {
+// ── GET /api/states or /states ─────────────────────────────────────────
+const handleStates = async (req, res) => {
   try {
     const token = await getAccessToken();
     const params = new URLSearchParams();
@@ -76,10 +76,12 @@ app.get('/api/states', async (req, res) => {
     console.error('[Proxy] Error:', err.message);
     res.status(500).json({ error: err.message });
   }
-});
+};
+app.get('/api/states', handleStates);
+app.get('/states', handleStates);
 
-// ── GET /api/track ──────────────────────────────────────────────────
-app.get('/api/track', async (req, res) => {
+// ── GET /api/track or /track ──────────────────────────────────────────
+const handleTrack = async (req, res) => {
   try {
     const token = await getAccessToken();
     const { icao24, time } = req.query;
@@ -98,11 +100,12 @@ app.get('/api/track', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+};
+app.get('/api/track', handleTrack);
+app.get('/track', handleTrack);
 
-// ── GET /api/airport ─────────────────────────────────────────────────
-// Proxy to OpenSky airport departures/arrivals
-app.get('/api/airport', async (req, res) => {
+// ── GET /api/airport or /airport ──────────────────────────────────────
+const handleAirport = async (req, res) => {
   try {
     const token = await getAccessToken();
     const { type, airport, begin, end } = req.query;
@@ -126,12 +129,16 @@ app.get('/api/airport', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+};
+app.get('/api/airport', handleAirport);
+app.get('/airport', handleAirport);
 
-// ── Health check ─────────────────────────────────────────────────────
+// ── Root & Health check ────────────────────────────────────────────────
+app.get('/', (req, res) => res.send('🛰️ Flight Radar API Proxy Server is Live!'));
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
 app.listen(PORT, () => {
-  console.log(`\n🛰️  Flight Radar Proxy running at http://localhost:${PORT}`);
-  console.log(`   OpenSky client: ${CLIENT_ID}\n`);
+  console.log(`\n🛰️  Flight Radar Proxy running on port ${PORT}`);
+  console.log(`   OpenSky client ID configured: ${CLIENT_ID ? 'YES' : 'NO'}\n`);
 });
+
