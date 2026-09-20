@@ -1,6 +1,6 @@
-import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Tooltip, useMap, useMapEvents } from 'react-leaflet';
 import { divIcon } from 'leaflet';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 // ── Aircraft SVG icon factory ────────────────────────────────────────
@@ -45,10 +45,56 @@ function FlyToFlight({ flight }) {
   return null;
 }
 
+// ── Viewport Tracker ───────────────────────────────────────────────
+function BoundsTracker({ onBoundsChange }) {
+  const map = useMapEvents({
+    moveend: () => onBoundsChange(map.getBounds(), map.getZoom()),
+    zoomend: () => onBoundsChange(map.getBounds(), map.getZoom()),
+  });
+
+  useEffect(() => {
+    onBoundsChange(map.getBounds(), map.getZoom());
+  }, [map, onBoundsChange]);
+
+  return null;
+}
+
 // ── Main Map Component ─────────────────────────────────────────────
 export default function FlightMap({ flights, selectedFlight, onFlightSelect }) {
-  const TILE_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-  const ATTR    = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  // Standard Free OSM Map (Dark mode handled via CSS invert filter)
+  const TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const ATTR    = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+
+  const [bounds, setBounds] = useState(null);
+  const [zoom, setZoom] = useState(3);
+
+  const handleBoundsChange = useCallback((newBounds, newZoom) => {
+    setBounds(newBounds);
+    setZoom(newZoom);
+  }, []);
+
+  // Filter flights by viewport to prevent lag
+  const visibleFlights = useMemo(() => {
+    if (!bounds || !flights) return [];
+    
+    let visible = flights.filter(f => {
+      if (!f.latitude || !f.longitude) return false;
+      return bounds.contains([f.latitude, f.longitude]);
+    });
+
+    // If zoomed far out, limit to 400 markers to maintain 60FPS
+    if (visible.length > 400) {
+      // Prioritize airborne and faster flights when culling
+      visible = visible.sort((a, b) => b.speedKts - a.speedKts).slice(0, 400);
+    }
+    
+    // Always ensure selected flight is visible even if culled
+    if (selectedFlight && !visible.some(f => f.icao24 === selectedFlight.icao24)) {
+      visible.push(selectedFlight);
+    }
+
+    return visible;
+  }, [flights, bounds, selectedFlight]);
 
   return (
     <div className="map-wrapper">
@@ -58,14 +104,14 @@ export default function FlightMap({ flights, selectedFlight, onFlightSelect }) {
         style={{ width: '100%', height: '100%' }}
         zoomControl={false}
         attributionControl={true}
+        preferCanvas={true}
       >
-        <TileLayer url={TILE_URL} attribution={ATTR} maxZoom={18} />
+        <TileLayer url={TILE_URL} attribution={ATTR} maxZoom={19} />
         <FlyToFlight flight={selectedFlight} />
+        <BoundsTracker onBoundsChange={handleBoundsChange} />
 
-        {flights.map(flight => {
-          if (!flight.latitude || !flight.longitude) return null;
+        {visibleFlights.map(flight => {
           const isSelected = selectedFlight?.icao24 === flight.icao24;
-
           return (
             <Marker
               key={flight.icao24}

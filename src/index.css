@@ -1000,7 +1000,10 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-.leaflet-tile-pane { filter: brightness(0.9) saturate(0.8); }
+/* Magic filter for dark mode OSM */
+.leaflet-tile-pane { 
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); 
+}
 
 .leaflet-popup-content-wrapper {
   background: var(--bg-panel) !important;

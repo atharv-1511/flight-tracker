@@ -15,7 +15,7 @@ export default function ATCPlayer() {
   const [activePreset, setActive]   = useState(null);
   const [customUrl, setCustomUrl]   = useState('');
   const [minimized, setMinimized]   = useState(false);
-  const [currentName, setName]      = useState('Select a station\u2026');
+  const [currentName, setName]      = useState('Select a station…');
   const [error, setError]           = useState(null);
   const audioRef                    = useRef(null);
 
@@ -76,33 +76,35 @@ export default function ATCPlayer() {
   if (minimized) {
     return (
       <div
-        className=\"atc-player\"
+        className="atc-player"
         style={{ width: 'auto', padding: '8px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}
         onClick={() => setMinimized(false)}
-      >\n        <span style={{ fontSize: 18 }}>\ud83c\udfa7</span>
+      >
+        <span style={{ fontSize: 18 }}>🎧</span>
         <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>ATC Audio</span>
         {playing && <div style={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 16 }}>
-          {[...Array(5)].map((_, i) => <div key={i} className=\"atc-bar\" style={{ width: 3, animationDelay: `${i * 0.1}s` }} />)}
+          {[...Array(5)].map((_, i) => <div key={i} className="atc-bar" style={{ width: 3, animationDelay: `${i * 0.1}s` }} />)}
         </div>}
       </div>
     );
   }
 
   return (
-    <div className=\"atc-player\" role=\"region\" aria-label=\"ATC Audio Player\">
-      <div className=\"atc-player__header\">
-        <span style={{ fontSize: 16 }}>\ud83c\udfa7</span>
-        <span className=\"atc-player__title\">ATC Live Audio</span>
+    <div className="atc-player" role="region" aria-label="ATC Audio Player">
+      <div className="atc-player__header">
+        <span style={{ fontSize: 16 }}>🎧</span>
+        <span className="atc-player__title">ATC Live Audio</span>
         <button
           onClick={() => setMinimized(true)}
           style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}
-          aria-label=\"Minimize\"\n        >\u2212</button>
+          aria-label="Minimize"
+        >−</button>
       </div>
 
-      <div className=\"atc-player__station\">{currentName}</div>
+      <div className="atc-player__station">{currentName}</div>
 
       {/* Visualizer */}
-      <div className=\"atc-visualizer\" aria-hidden=\"true\">
+      <div className="atc-visualizer" aria-hidden="true">
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
@@ -116,25 +118,26 @@ export default function ATCPlayer() {
       </div>
 
       {/* Controls */}
-      <div className=\"atc-controls\">
-        <button id=\"atc-play-btn\" className=\"atc-btn atc-btn--play\" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
-          {playing ? '\u23f8' : '\u25b6'}
+      <div className="atc-controls">
+        <button id="atc-play-btn" className="atc-btn atc-btn--play" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
+          {playing ? '⏸' : '▶'}
         </button>
         <input
-          id=\"atc-volume\"
-          className=\"atc-volume\"
-          type=\"range\"
-          min=\"0\"
-          max=\"1\"
-          step=\"0.05\"
+          id="atc-volume"
+          className="atc-volume"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
           value={volume}
           onChange={handleVolume}
-          aria-label=\"Volume\"\n        />
+          aria-label="Volume"
+        />
         <span style={{ fontSize: 11, color: 'var(--text-muted)', minWidth: 28 }}>{Math.round(volume * 100)}%</span>
       </div>
 
       {/* Presets */}
-      <div className=\"atc-presets\">
+      <div className="atc-presets">
         {ATC_PRESETS.map(p => (
           <button
             key={p.id}
@@ -147,24 +150,25 @@ export default function ATCPlayer() {
       {/* Custom URL */}
       <div style={{ display: 'flex', gap: 6 }}>
         <input
-          id=\"atc-custom-url\"
-          className=\"atc-url-input\"
+          id="atc-custom-url"
+          className="atc-url-input"
           style={{ flex: 1 }}
-          placeholder=\"Paste stream URL (.mp3 / .pls)\"\n          value={customUrl}
+          placeholder="Paste stream URL (.mp3 / .pls)"
+          value={customUrl}
           onChange={e => setCustomUrl(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleCustom()}
-          aria-label=\"Custom stream URL\"
+          aria-label="Custom stream URL"
         />
         <button
-          className=\"airport-btn\"
+          className="airport-btn"
           style={{ padding: '5px 10px', fontSize: 11 }}
           onClick={handleCustom}
-        >\u25b6</button>
+        >▶</button>
       </div>
 
       {error && (
         <div style={{ marginTop: 8, fontSize: 11, color: 'var(--accent-amber)', lineHeight: 1.4 }}>
-          \u26a0 {error}
+          ⚠ {error}
         </div>
       )}
     </div>

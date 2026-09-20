@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Navbar({ stats, lastUpdated, loading }) {
-  const timeStr = lastUpdated
-    ? lastUpdated.toLocaleTimeString('en-US', { hour12: false })
-    : '--:--:--';
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
 
   return (
     <nav className="navbar" role="navigation" aria-label="Main navigation">
@@ -37,10 +42,10 @@ export default function Navbar({ stats, lastUpdated, loading }) {
         </div>
         <div className="navbar__divider" />
         <div className="navbar__stat">
-          <div className="navbar__stat-value" style={{ fontSize: '13px' }}>
+          <div className="navbar__stat-value" style={{ fontSize: '13px', color: 'var(--accent-cyan)' }}>
             {timeStr}
           </div>
-          <div className="navbar__stat-label">Last Update</div>
+          <div className="navbar__stat-label">Local Time</div>
         </div>
       </div>
 

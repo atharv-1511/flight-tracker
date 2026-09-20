@@ -1,11 +1,11 @@
-const PROXY_URL = 'http://localhost:3001';
-
+// Vercel Serverless API endpoints
+const API_URL = '/api';
 /**
  * Fetch all live state vectors from the OpenSky proxy.
  * @param {Object} bbox - Optional bounding box { lamin, lomin, lamax, lomax }
  */
 export async function fetchStates(bbox = null) {
-  let url = `${PROXY_URL}/api/states`;
+  let url = `${API_URL}/states`;
   if (bbox) {
     const params = new URLSearchParams({
       lamin: bbox.lamin,
@@ -58,7 +58,7 @@ function parseStates(raw) {
  * Fetch flights for a specific airport (arrivals or departures).
  */
 export async function fetchAirportFlights(icao, type = 'arrivals') {
-  const res = await fetch(`${PROXY_URL}/api/airport/${type}?airport=${icao.toUpperCase()}`);
+  const res = await fetch(`${API_URL}/airport?type=${type}&airport=${icao.toUpperCase()}`);
   if (!res.ok) throw new Error(`Airport fetch error: ${res.status}`);
   return res.json();
 }

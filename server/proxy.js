@@ -102,12 +102,14 @@ app.get('/api/track', async (req, res) => {
 
 // ── GET /api/airport ─────────────────────────────────────────────────
 // Proxy to OpenSky airport departures/arrivals
-app.get('/api/airport/:type', async (req, res) => {
+app.get('/api/airport', async (req, res) => {
   try {
     const token = await getAccessToken();
-    const { type } = req.params; // 'departures' or 'arrivals'
-    const { airport, begin, end } = req.query;
+    const { type, airport, begin, end } = req.query;
 
+    if (!type || !['departures', 'arrivals'].includes(type)) {
+      return res.status(400).json({ error: 'type must be departures or arrivals' });
+    }
     if (!airport) return res.status(400).json({ error: 'airport ICAO required' });
 
     const now = Math.floor(Date.now() / 1000);
