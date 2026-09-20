@@ -1,5 +1,5 @@
-// Vercel Serverless API endpoints
-const API_URL = '/api';
+const API_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+
 /**
  * Fetch all live state vectors from the OpenSky proxy.
  * @param {Object} bbox - Optional bounding box { lamin, lomin, lamax, lomax }
